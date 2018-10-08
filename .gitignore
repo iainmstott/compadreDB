@@ -1,19 +1,25 @@
-# History files
+### History files
 .Rhistory
 .Rapp.history
 
-# Example code in package build process
+### Example code in package build process
 *-Ex.R
 
-# R data files from past sessions
+### R data files from past sessions
 .Rdata
 
-# The Mage Rcheck files
-Mage.Rcheck/
-
-#Hidden files
+### Hidden files
 .DS_Store
-.Rproj.user
 
-*.Rproj
+### Data that shouldn't be open to public
+#-- Processed data
+/DBVersionsClean/*.Rdata
+#-- Current DB versions
+#-- this should be changed for every new release
+/DBVersionsCurrent/
+#-- Personal project data
+/DBVersionsProjects/
+#-- Supplemented data (extra metadata)
+/DBVersionsSupplemented/
+
 
