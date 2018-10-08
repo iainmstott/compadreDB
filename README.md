@@ -23,4 +23,3 @@ The structure of the compadre and comadre data objects
              |
               \-- version {a vector with version information}
 
-
