@@ -16,10 +16,12 @@
 /DBVersionsClean/*.Rdata
 #-- Current DB versions
 #-- this should be changed for every new release
-/DBVersionsCurrent/
-#-- Personal project data
-/DBVersionsProjects/
+/DBVersionsCurrent/*.Rdata
 #-- Supplemented data (extra metadata)
-/DBVersionsSupplemented/
+/DBVersionsSupplemented/*.Rdata
+/DBVersionsSupplemented/*.csv
+/DBVersionsSupplemented/*.xlsx
+/DBVersionsSupplemented/*/*.csv
+
 
 

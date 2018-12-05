@@ -1,6 +1,13 @@
 com(p)adreDB
 ==========
 
+This fork is mainly for my own use, but contains some useful code and pointers
+to certain 'upgrades' available for the databases. The data themselves aren't 
+available online in this remote (they're not 'official' versions of the database),
+but can be obtained by emailing me iainmstott[at]gmail.com.
+
+***
+
 This repository contains code for the COMPADRE Plant Matrix Database and COMADRE Animal Matrix Database.
 It will evolve into an R package but will initially contain scripts for interacting with the COMPADRE and COMADRE databases which are released as structured R list objects.
 
