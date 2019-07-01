@@ -13,8 +13,8 @@
 
 #-- Current DB versions
 #-- this should be changed for every new release
-COMPADRE_v.5.0.0*.RData
-COMADRE_v.3.0.0*.RData
+compadre_v.5.0.0*.RData
+comadre_v.3.0.0*.RData
 #-- Supplemented data (extra metadata)
 /DBVersionsSupplemented/*.RData
 /DBVersionsSupplemented/*.csv
