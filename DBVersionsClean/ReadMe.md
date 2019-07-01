@@ -8,7 +8,9 @@ but can be obtained by emailing me iainmstott[at]gmail.com.
 
 ***
 
-This folder contains code to 'clean up' the com(p)adre databases.
+This folder contains code to 'clean up' the com(p)adre databases. It should 
+run on any database version (and both current and previous versions are 
+supplied in this folder).
 
 The code adds several variables to the metadata which can be used to exclude matrices 
 that suffer from a number of common problems. The problems cover issues that 

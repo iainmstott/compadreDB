@@ -11,6 +11,10 @@ but can be obtained by emailing me iainmstott[_at_]gmail[_dot_]com.
 This folder includes code to help 'clean up' the databases, by adding variables
 that indicate problematic models. 
 
+The below info is available for both compadre and comadre up to versions 
+3.2.1 and 2.0.1 respectively. Average matrices calculated by the com(p)adre team
+are removed as of versions 5.0.0 and 3.0.0 respectively.
+
 Extra data includes:
 * **MatrixCompositePlus**: extension to the MatrixComposite variable. The 
                            original variable doesn't distinguish between 
@@ -34,12 +38,7 @@ Extra data includes:
               full annual transition.
 
 
-(to be completed)
-
-
-
-
-
+The below info is available only for compadre version 3.2.1.
 
 **MetadataSupplement.csv**
 * **OrganismType** (for compadre version 3.2.1 and lower): the life history categories defined compadre 4.0.0 and comadre 2.0.0 and higher. For information on this variable please see the [compadre user guide](https://github.com/jonesor/compadreDB/blob/master/COMPADRE-UserGuide/COMPADRE-UserGuide.pdf)
@@ -64,7 +63,6 @@ Extra data includes:
   - Data Deficient (_DD_)
   - Not Evaluated (_NE_)
 
-  
 **SeedsSupplement.csv**
 * **SeedsProblem**: does the matrix suffer from the 'seeds problem'? 
                     (TRUE / FALSE) - in most cases, it's desirable that the

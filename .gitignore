@@ -16,7 +16,8 @@
 /DBVersionsClean/*.Rdata
 #-- Current DB versions
 #-- this should be changed for every new release
-/DBVersionsCurrent/*.Rdata
+/DBVersionsCurrent/COMPADRE_v5.0.0.Rdata
+/DBVersionsCurrent/COMADRE_v3.0.0.Rdata
 #-- Supplemented data (extra metadata)
 /DBVersionsSupplemented/*.Rdata
 /DBVersionsSupplemented/*.csv
