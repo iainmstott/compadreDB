@@ -11,15 +11,12 @@
 ### Hidden files
 .DS_Store
 
-### Data that shouldn't be open to public
-#-- Processed data
-/DBVersionsClean/*.Rdata
 #-- Current DB versions
 #-- this should be changed for every new release
-DBVersions/COMPADRE_v.5.0.0.RData
-DBVersions/COMADRE_v.3.0.0.RData
+COMPADRE_v.5.0.0*.RData
+COMADRE_v.3.0.0*.RData
 #-- Supplemented data (extra metadata)
-/DBVersionsSupplemented/*.Rdata
+/DBVersionsSupplemented/*.RData
 /DBVersionsSupplemented/*.csv
 /DBVersionsSupplemented/*.xlsx
 /DBVersionsSupplemented/*/*.csv
