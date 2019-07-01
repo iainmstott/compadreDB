@@ -1,0 +1,29 @@
+Birds: 
+http://birdtree.org (Click on Downloads, or use the Phylogeny subsets)
+W. Jetz, G. H. Thomas, J. B. Joy, K. Hartmann, A. O. Mooers (2012) The global diversity of birds in space and time. Nature, 491: 444-448 doi:10.1038/nature11631
+
+Reptiles:
+Pyron, R. A., & Burbrink, F. T. (2014). Early origin of viviparity and multiple reversions to oviparity in squamate reptiles. Ecology letters, 17(1), 13-21.
+
+Mammals: 
+mammalian supertree (Bininda-Emonds et al. 2007; Davies
+et al. 2008; as updated by Fritz, Bininda- Emonds, & Purvis
+2009).
+
+Bininda-Emonds, O.R.P., Cardillo, M., Jones, K.E., MacPhee, R., Beck, R.M.D., Grenyer, R., Price, S.A., Vos, R.A., Gittleman, J.L. & Purvis, A. (2007) The delayed rise of present-day mammals. Nature, 446, 507–512.
+
+Davies, T.J., Fritz, S.A., Grenyer, R., Orme, C.D.L., Bielby, J., BinindaEmonds, O.R.P., Cardillo, M., Jones, K.E., Gittleman, J.L. & Mace, G.M. (2008) Phylogenetic trees and the future of mammalian biodiversity. Proceedings of the National Academy of Sciences, 105, 11556.
+
+Fritz, S.A., Bininda- Emonds, O.R.P. & Purvis, A. (2009) Geographical variation in predictors of mammalian extinction risk: big is bad, but only in the tropics. Ecology letters, 12, 538–549.
+
+
+Amphibians: 
+Fritz, S. A. and Rahbek, C. (2012), Global patterns of amphibian phylogenetic diversity. Journal of Biogeography, 39: 1373-1382. doi:10.1111/j.1365-2699.2012.02757.x
+
+
+I have used the Time Tree of Life for making trees too (http://www.timetree.org).  I used this for the book chapter we wrote for the senescence book. It seems very good for the kind of uses we need.
+
+To quote the method from the book chapter:
+Our phylogenetically-informed analysis was founded on a phylogeny created by combining the plant tree provided in Salguero-Gómez et al. (2014) and an animal tree based on the trees provided as part of the supplementary material for Hedges et al. (2015) – the “time tree of life” (TTOL). For the animal tree, where the exact species for which we had an MPM was not included in the TTOL, a close relative was selected (e.g. from the same genus). Where we had more than one MPM for a given species we added arbitrary very short branch(es) to represent the 2+ populations. Then, because the trees have been constructed using different methods, rather than using the node heights provided in the dated phylogenies we elected to use Grafen’s (1989) branch length transformation which we implemented using the function compute.brlen in package ape (Paradis et al. 2004), whereby each node is given a ‘height’, matching the number of leaves in the subtree minus one, and these heights are then scaled so that root height is 1. 
+
+S. Blair Hedges, Julie Marin, Michael Suleski, Madeline Paymer, Sudhir Kumar; Tree of Life Reveals Clock-Like Speciation and Diversification, Molecular Biology and Evolution, Volume 32, Issue 4, 1 April 2015, Pages 835–845, https://doi.org/10.1093/molbev/msv037
