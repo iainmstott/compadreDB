@@ -11,15 +11,11 @@
 ### Hidden files
 .DS_Store
 
+#-- Supplemented data (extra metadata)
+/DBVersionsSupplemented/
+!*.md
+
 #-- Current DB versions
 #-- this should be changed for every new release
-DBVersions/compadre_v.5.0.0.RData
-DBVersions/comadre_v.3.0.0.RData
-#-- Supplemented data (extra metadata)
-/DBVersionsSupplemented/*.RData
-/DBVersionsSupplemented/*.csv
-/DBVersionsSupplemented/*.xlsx
-/DBVersionsSupplemented/*/*.csv
-
-
-
+compadre_v.5.0.0*.Rdata
+comadre_v.3.0.0*.Rdata
