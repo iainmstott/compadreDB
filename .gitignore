@@ -19,3 +19,6 @@
 #-- this should be changed for every new release
 compadre_v.5.0.0*.Rdata
 comadre_v.3.0.0*.Rdata
+
+#-- Unreleased DB versions
+/DBVersionsX/

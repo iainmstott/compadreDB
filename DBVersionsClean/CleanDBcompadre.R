@@ -16,13 +16,14 @@
 # load packages
 library(popdemo)
 library(Rcompadre)
+library(ape)
 
 
 #_______________________________________________________________________________
 # DATA --- EDIT AS NEEDED
 # load the data
 #load("path/to/data/file.Rdata")
-load("DBVersionsCurrent/COMPADRE_v4.0.1.Rdata")
+load("DBVersions/COMPADRE_v.5.0.0.Rdata")
 # Choose from below depending on which database you're working with:
 DB <- compadre
 
@@ -371,7 +372,7 @@ compadre <- DB
 rm(list = ls()[!ls() %in% "compadre"])
 
 # load the phylogeny
-load("GeneratePhylogeny/GeneratedTrees/20180728_compadrePhylogeny.Rdata")
+phy <- read.tree("Phylogeny/COMPADRE-COMADRE_Phylo_June_16_2019.tre")
 
 # save the .Rdata object
-save.image("DBVersionsClean/compadre_v4.0.1_Clean.Rdata")
+save.image("DBVersionsClean/compadre_v.5.0.0_Clean.Rdata")
