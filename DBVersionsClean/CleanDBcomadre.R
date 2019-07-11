@@ -346,4 +346,4 @@ rm(list = ls()[!ls() %in% "comadre"])
 phy <- read.tree("Phylogeny/COMPADRE-COMADRE_Phylo_June_16_2019.tre")
 
 # save the .Rdata object
-save.image("DBVersionsClean/comadre_v3.0.0_Clean.Rdata")
+save.image("DBVersionsClean/comadre_v.3.0.0_Clean.Rdata")
