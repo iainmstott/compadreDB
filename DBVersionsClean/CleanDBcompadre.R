@@ -181,6 +181,7 @@ DB$AvSurvRYGNoZero <- survRYGNoZero
 # we can calculate stuff from these. DB$check_nonzero_F is a variable that is TRUE
 # if matU contains at least one nonzero number and no NAs, FALSE otherwise.
 DB$check_zero_F <- sapply(matF(DB), function(M){ all(M %in% 0) })
+
 DB$check_nonzero_F <- !DB$check_NA_F & !DB$check_zero_F
 
 # note that these variables are connected to the "MatrixSplit" variable, 
