@@ -25,25 +25,14 @@ library(ape)
 #load("path/to/data/file.Rdata")
 load("DBVersions/COMADRE_v.3.0.0.Rdata")
 # Choose from below depending on which database you're working with:
-DB <- comadre
+cdb_DB <- as_cdb(comadre)
 
 
 #_______________________________________________________________________________
-# NAs 
-# find if matrices have NAs and add to metadata
-hasNA <- sapply(DB$mat, function(x){ any(is.na(x$matA)) })
-DB$metadata <- data.frame(DB$metadata, hasNA)
+# NAs, zeroes, sums, singularity, ergodicity
+# run cdb_flag to check whether there are common problems with the matrices
+DB <- cdb_flag(cdb_DB)
 
-
-#_______________________________________________________________________________
-# IRREDUCIBILITY
-# find which matrcices are reducible (skipping NA matrices) and add to metadata
-Irreducible <- mapply(
-    function(na, M){ ifelse(na, FALSE, isIrreducible(M$matA)) },
-    na = hasNA, M = DB$mat,
-    SIMPLIFY = TRUE
-)
-DB$metadata <- data.frame(DB$metadata, Irreducible)
 
 
 #_______________________________________________________________________________
@@ -52,33 +41,22 @@ DB$metadata <- data.frame(DB$metadata, Irreducible)
 
 
 
-# First we need to work out which U matrices we can get survival 
-# estimates from.
-# Some U matrices contain NAs: we can't calculate stuff from these. matUna 
-# is a variable that is TRUE if a U matrix contains at least one NA, FALSE
-# otherwise.
-matUna <- sapply(DB$mat, function(M){ any(is.na(M$matU)) })
-# Some U matrices don't contain any nonzero entries: we can't calculate 
-# stuff from these. matUzero is a variable that is TRUE if all entries in 
-# matU are zero, FALSE otherwise.
-matUzero <- sapply(DB$mat, function(M){ all(M$matU %in% 0) })
-# The rest of the U matrices don't contain NAs and do contain nonzero entries:
-# we can calculate stuff from these. matUnonzero is a variable that is TRUE
+# We want to work with U matrices that don't contain NAs and do contain nonzero entries:
+# we can calculate stuff from these. DB$check_nonzero_U is a variable that is TRUE
 # if matU contains at least one nonzero number and no NAs, FALSE otherwise.
-matUnonzero <- sapply(DB$mat, function(M){ 
-    !any(is.na(M$matU)) & any(M$matU > 0) 
-})
+DB$check_nonzero_U <- !DB$check_NA_U & !DB$check_zero_U
+
 # note that these variables are connected to the "MatrixSplit" variable, 
 # as a U matrix that indivisible contains all NAs. However a matrix can 
 # be 'Divided' and contain either NAs, or no nonzero entries:
-which(matUna + (DB$metadata$MatrixSplit == "Divided") == 2)
-which(matUzero + (DB$metadata$MatrixSplit == "Divided") == 2)
+which(DB$check_NA_U + (DB$MatrixSplit == "Divided") == 2)
+which(DB$check_zero_U + (DB$MatrixSplit == "Divided") == 2)
 # a matrix can also be recorded as indivisible but have a nonzero U matrix:
-which(matUnonzero + (DB$metadata$MatrixSplit == "Indivisible") == 2)
+which(DB$check_nonzero_U + (DB$MatrixSplit == "Indivisible") == 2)
 
 # Survival per stage (column sums of U matrix). stageSurv is a list containing 
 # the column sums of matU (survival per stage)
-stageSurv <- lapply(lapply(DB$mat, function(M){ M$matU }), colSums)
+stageSurv <- lapply(matU(DB), colSums)
 # find the groups of consecutive average survival using run length encoding
 # (rle)
 survGroups_rle <- lapply(stageSurv, 
@@ -114,7 +92,8 @@ survGroupsZero <- mapply(function(sG, sS, mUz){
                              }
                              sGZ
                          },
-                         sG = survGroups, sS = stageSurv, mUz = matUzero)
+                         sG = survGroups, sS = stageSurv,
+                         mUz = DB$check_zero_U)
 
 #collapse these so that zero survival groups aren't included. For example,
 # a matrix with stageSurv of c(0.1, 0.12, 0.5, 0.5, 0.5, 0, 0, 0.9) 
@@ -171,26 +150,26 @@ survRYGNoZero[maxConsecSurvNoZero >= 2 & maxConsecSurvNoZero <= nStages / 2] <- 
 survRYGNoZero[maxConsecSurvNoZero >= 2 & maxConsecSurvNoZero > nStages / 2] <- "R"
 
 # make very sure NAs in the correct places
-stageSurv[!matUnonzero] <- NA
-survGroups_rle[!matUnonzero] <- NA
-survGroupsSummary[!matUnonzero] <- NA
-survGroups[!matUnonzero] <- NA
-survGroupsZero[!matUnonzero] <- NA
-survGroupsNoZero[!matUnonzero] <- NA
-survGroupsNoZero_rle[!matUnonzero] <- NA
-survGroupsNoZeroSummary[!matUnonzero] <- NA
-maxConsecSurv[!matUnonzero] <- NA
-maxConsecSurvNoZero[!matUnonzero] <- NA
-survRYG[!matUnonzero] <- NA
-survRYGNoZero[!matUnonzero] <- NA
+stageSurv[!DB$check_nonzero_U] <- NA
+survGroups_rle[!DB$check_nonzero_U] <- NA
+survGroupsSummary[!DB$check_nonzero_U] <- NA
+survGroups[!DB$check_nonzero_U] <- NA
+survGroupsZero[!DB$check_nonzero_U] <- NA
+survGroupsNoZero[!DB$check_nonzero_U] <- NA
+survGroupsNoZero_rle[!DB$check_nonzero_U] <- NA
+survGroupsNoZeroSummary[!DB$check_nonzero_U] <- NA
+maxConsecSurv[!DB$check_nonzero_U] <- NA
+maxConsecSurvNoZero[!DB$check_nonzero_U] <- NA
+survRYG[!DB$check_nonzero_U] <- NA
+survRYGNoZero[!DB$check_nonzero_U] <- NA
 
 # add to metadata
-DB$metadata$UcolSum <- stageSurv
-DB$metadata$AvSurvGrp <- survGroupsZero
-DB$metadata$AvSurvMax <- maxConsecSurv
-DB$metadata$AvSurvMaxNoZero <- maxConsecSurvNoZero
-DB$metadata$AvSurvRYG <- survRYG
-DB$metadata$AvSurvRYGNoZero <- survRYGNoZero
+DB$UcolSum <- stageSurv
+DB$AvSurvGrp <- survGroupsZero
+DB$AvSurvMax <- maxConsecSurv
+DB$AvSurvMaxNoZero <- maxConsecSurvNoZero
+DB$AvSurvRYG <- survRYG
+DB$AvSurvRYGNoZero <- survRYGNoZero
 
 
 
@@ -198,33 +177,23 @@ DB$metadata$AvSurvRYGNoZero <- survRYGNoZero
 # AVERAGED FECUNDITY
 # work out whether there appears to be averaging of fecundity 
 
-# First we need to work out which F matrices we can get fecundity 
-# estimates from.
-# Some F matrices contain NAs: we can't calculate stuff from these. matFna 
-# is a variable that is TRUE if an F matrix contains at least one NA, FALSE
-# otherwise.
-matFna <- sapply(DB$mat, function(M){ any(is.na(M$matF)) })
-# Some F matrices don't contain any nonzero entries: we can't calculate 
-# stuff from these. matFzero is a variable that is TRUE if all entries in 
-# matF are zero, FALSE otherwise.
-matFzero <- sapply(DB$mat, function(M){ all(M$matF %in% 0) })
-# The rest of the F matrices don't contain NAs and do contain nonzero entries:
-# we can calculate stuff from these. matFnonzero is a variable that is TRUE
-# if matF contains at least one nonzero number and no NAs, FALSE otherwise.
-matFnonzero <- sapply(DB$mat, function(M){ 
-    !any(is.na(M$matF)) & any(M$matF > 0) 
-})
+# We want to work with F matrices that don't contain NAs and do contain nonzero entries:
+# we can calculate stuff from these. DB$check_nonzero_F is a variable that is TRUE
+# if matU contains at least one nonzero number and no NAs, FALSE otherwise.
+DB$check_zero_F <- sapply(matF(DB), function(M){ all(M %in% 0) })
+DB$check_nonzero_F <- !DB$check_NA_F & !DB$check_zero_F
+
 # note that these variables are connected to the "MatrixSplit" variable, 
-# as a matrix that indivisible contains all NAs. However a matrix can 
+# as an F matrix that indivisible contains all NAs. However a matrix can 
 # be 'Divided' and contain either NAs, or no nonzero entries:
-which(matFna + (DB$metadata$MatrixSplit == "Divided") == 2)
-which(matFzero + (DB$metadata$MatrixSplit == "Divided") == 2)
+which(DB$check_NA_F + (DB$MatrixSplit == "Divided") == 2)
+which(DB$check_zero_F + (DB$MatrixSplit == "Divided") == 2)
 # a matrix can also be recorded as indivisible but have a nonzero F matrix:
-which(matFnonzero + (DB$metadata$MatrixSplit == "Indivisible") == 2)
+which(DB$check_nonzero_F + (DB$MatrixSplit == "Indivisible") == 2)
 
 # Fecundity per stage (column sums of F matrix). stageFec is a list containing 
 # the column sums of matF (the total sexual reproduction per stage)
-stageFec <- lapply(lapply(DB$mat, function(M){ M$matF }), colSums)
+stageFec <- lapply(matF(DB), colSums)
 # First fecund stage. firstFec is a variable with the number of the first stage
 # where stageFec is greater than zero.
 firstFec <- mapply( function(sF, Fna, Fz, Fnz){ 
@@ -233,7 +202,8 @@ firstFec <- mapply( function(sF, Fna, Fz, Fnz){
                             return(min(which(!(sF %in% 0))))
                         }
                     }, 
-            sF = stageFec, Fna = matFna, Fz = matFzero, Fnz = matFnonzero)
+            sF = stageFec, Fna = DB$check_NA_F,
+            Fz = DB$check_zero_F, Fnz = DB$check_nonzero_F)
 # extract only fecund stages (those to RHS of first fecund stage). stageFecMature
 # is a list containing stageFec for only those stages after and including 
 # firstFec.
@@ -276,7 +246,8 @@ fecGroupsZero <- mapply(function(fG, sFM, mFz){
                             }
                             fGZ
                         },
-                        fG = fecGroups, sFM = stageFecMature, mFz = matFzero)
+                        fG = fecGroups, sFM = stageFecMature,
+                        mFz = DB$check_zero_F)
 
 #collapse these so that zero fecundity groups aren't included. For example,
 # a matrix with stageFecMature of c(0.1, 0.12, 0.5, 0.5, 0.5, 0, 0, 0.9) 
@@ -310,7 +281,7 @@ maxConsecFecNoZero <- sapply(fecGroupsNoZeroSummary,
                             })
 
 # extract number of fertile stages
-nFstages <- DB$metadata$MatrixDimension - firstFec + 1 
+nFstages <- DB$MatrixDimension - firstFec + 1 
 # extract number of reproducing stages
 # nRstages <- sapply(stageFec, function(sF) length(which(sF != 0)))
 
@@ -336,31 +307,31 @@ fecRYGNoZero[maxConsecFecNoZero >= 2 & maxConsecFecNoZero <= nFstages / 2] <- "Y
 fecRYGNoZero[maxConsecFecNoZero >= 2 & maxConsecFecNoZero > nFstages / 2] <- "R"
 
 # make very sure NAs in the correct places
-stageFec[!matFnonzero] <- NA
-firstFec[!matFnonzero] <- NA
-stageFecMature[!matFnonzero] <- NA
-fecGroups_rle[!matFnonzero] <- NA
-fecGroupsSummary[!matFnonzero] <- NA
-fecGroups[!matFnonzero] <- NA
-fecGroupsZero[!matFnonzero] <- NA
-fecGroupsNoZero[!matFnonzero] <- NA
-fecGroupsNoZero_rle[!matFnonzero] <- NA
-fecGroupsNoZeroSummary[!matFnonzero] <- NA
-maxConsecFec[!matFnonzero] <- NA
-maxConsecFecNoZero[!matFnonzero] <- NA
-nFstages[!matFnonzero] <- NA
-fecRYG[!matFnonzero] <- NA
-fecRYGNoZero[!matFnonzero] <- NA
+stageFec[!DB$check_nonzero_F] <- NA
+firstFec[!DB$check_nonzero_F] <- NA
+stageFecMature[!DB$check_nonzero_F] <- NA
+fecGroups_rle[!DB$check_nonzero_F] <- NA
+fecGroupsSummary[!DB$check_nonzero_F] <- NA
+fecGroups[!DB$check_nonzero_F] <- NA
+fecGroupsZero[!DB$check_nonzero_F] <- NA
+fecGroupsNoZero[!DB$check_nonzero_F] <- NA
+fecGroupsNoZero_rle[!DB$check_nonzero_F] <- NA
+fecGroupsNoZeroSummary[!DB$check_nonzero_F] <- NA
+maxConsecFec[!DB$check_nonzero_F] <- NA
+maxConsecFecNoZero[!DB$check_nonzero_F] <- NA
+nFstages[!DB$check_nonzero_F] <- NA
+fecRYG[!DB$check_nonzero_F] <- NA
+fecRYGNoZero[!DB$check_nonzero_F] <- NA
 
 # add to metadata
-DB$metadata$FcolSum <- stageFec
-DB$metadata$FirstF <- firstFec
-DB$metadata$FnStages <- nFstages
-# DB$metadata$RnStages <- nRstages
-DB$metadata$AvFecGrp <- fecGroupsZero
-DB$metadata$AvFecMaxNoZero <- maxConsecFecNoZero
-DB$metadata$AvFecRYG <- fecRYG
-DB$metadata$AvFecRYGNoZero <- fecRYGNoZero
+DB$FcolSum <- stageFec
+DB$FirstF <- firstFec
+DB$FnStages <- nFstages
+# DB$RnStages <- nRstages
+DB$AvFecGrp <- fecGroupsZero
+DB$AvFecMaxNoZero <- maxConsecFecNoZero
+DB$AvFecRYG <- fecRYG
+DB$AvFecRYGNoZero <- fecRYGNoZero
 
 
 #_______________________________________________________________________________
