@@ -127,7 +127,7 @@ maxConsecSurvNoZero <- sapply(survGroupsNoZeroSummary,
                               })
 
 # extract number of stages
-nStages <- DB$metadata$MatrixDimension
+nStages <- DB$MatrixDimension
 
 # take the lists of consecutive survival and work out a "traffic light"
 # system to categorise them. Find the length of the consecutive averages
